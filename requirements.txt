@@ -1,0 +1,9 @@
+# Phase 1 needs mujoco, numpy, pyyaml, matplotlib. The rest are used from Phase 5 onward.
+mujoco>=3.2,<4
+numpy>=1.26,<3
+pyyaml>=6.0
+matplotlib>=3.8
+pandas>=2.1
+gymnasium>=0.29,<2
+stable-baselines3>=2.3,<3
+tensorboard>=2.15

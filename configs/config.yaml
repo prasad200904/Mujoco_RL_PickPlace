@@ -1,0 +1,58 @@
+# Mujoco_RL_PickPlace - central configuration.
+# Phase 1 uses the `scene` and `validation` sections; later phases add
+# `controller`, `reward`, `ppo`, `curriculum`, `evaluation` sections.
+
+seed: 42
+
+paths:
+  scene_xml: assets/scene.xml
+  graphs_dir: results/graphs
+  logs_dir: results/logs
+  models_dir: results/models
+
+scene:
+  home_keyframe: home          # keyframe defined in assets/scene.xml
+  table_top_z: 0.40            # table surface height (m)
+  cube_half_size: 0.025        # cube edge = 5 cm
+  # Randomisation ranges for cube spawn / target placement (world frame, metres).
+  # The cube rests on the table, so z is derived from table_top_z + cube_half_size.
+  cube_spawn:
+    x: [0.38, 0.72]
+    y: [-0.30, 0.30]
+  target_spawn:
+    x: [0.38, 0.72]
+    y: [-0.30, 0.30]
+  # Minimum distance between cube and target at spawn (m) so the task is non-trivial.
+  min_cube_target_distance: 0.15
+  # Named layouts used later by the evaluation module (left / centre / right of the table).
+  presets:
+    left:   {cube: [0.50,  0.22], target: [0.50, -0.22]}
+    center: {cube: [0.55,  0.00], target: [0.55,  0.25]}
+    right:  {cube: [0.50, -0.22], target: [0.50,  0.22]}
+
+viewer:
+  camera: overview             # fixed camera defined in scene.xml
+  realtime: true
+
+reward:
+  type: dense                  # "dense" (shaped multi-stage) or "sparse" (0 or 1)
+  success_distance: 0.035      # distance (m) from target to consider successful
+  lift_threshold: 0.03         # height (m) above table rest height to count as lifted
+  target_lift_height: 0.15     # desired transport height above rest
+  weights:
+    reach: 1.0                 # reward for moving gripper close to cube
+    grasp: 0.5                 # bonus for grasping cube with both fingertips
+    lift: 1.5                  # reward for lifting cube off table
+    place: 2.5                 # reward for bringing cube to target
+    success: 10.0              # terminal/state bonus when placed on target
+    action_penalty: 0.01       # energy penalty: -w * ||ctrl||^2
+    velocity_penalty: 0.005    # smoothness penalty: -w * ||qvel[:7]||^2
+
+validation:
+  settle_seconds: 3.0          # simulate this long before checking the cube rests on the table
+  hold_seconds: 1.0            # grasp smoke test: hold duration
+  cube_rest_tolerance: 0.003   # |cube_z - (table_top + half_size)| allowed (m)
+  home_joint_tolerance: 0.02   # max |q - q_home| after settling (rad)
+  spawn_trials: 10             # random cube spawns that must settle on the table
+  render_width: 960
+  render_height: 720

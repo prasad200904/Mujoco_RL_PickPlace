@@ -1,0 +1,30 @@
+<mujoco>
+  <!--
+    Table + robot pedestal.
+    Table top surface is at z = 0.40 m.  Top: x in [0.15, 0.95], y in [-0.5, 0.5].
+    The Panda base sits on the pedestal at the world origin (x=0), z = 0.40.
+  -->
+  <asset>
+    <texture name="wood_tex" type="2d" builtin="flat" rgb1="0.66 0.50 0.34" width="64" height="64"/>
+    <material name="wood" texture="wood_tex" specular="0.2" shininess="0.1"/>
+    <material name="pedestal_mat" rgba="0.25 0.27 0.30 1" specular="0.3"/>
+  </asset>
+
+  <worldbody>
+    <body name="table" pos="0.55 0 0">
+      <!-- Table top (half-sizes 0.40 x 0.50 x 0.02, centre z=0.38 -> top surface z=0.40) -->
+      <geom name="table_top" type="box" size="0.40 0.50 0.02" pos="0 0 0.38"
+            material="wood" friction="1.0 0.005 0.0001" condim="4" mass="20"/>
+      <!-- Legs -->
+      <geom name="table_leg_1" type="box" size="0.02 0.02 0.18" pos=" 0.36  0.46 0.18" material="wood"/>
+      <geom name="table_leg_2" type="box" size="0.02 0.02 0.18" pos=" 0.36 -0.46 0.18" material="wood"/>
+      <geom name="table_leg_3" type="box" size="0.02 0.02 0.18" pos="-0.36  0.46 0.18" material="wood"/>
+      <geom name="table_leg_4" type="box" size="0.02 0.02 0.18" pos="-0.36 -0.46 0.18" material="wood"/>
+    </body>
+
+    <!-- Pedestal that carries the robot (top surface z = 0.40) -->
+    <body name="pedestal" pos="0 0 0">
+      <geom name="pedestal_geom" type="box" size="0.12 0.12 0.20" pos="0 0 0.20" material="pedestal_mat"/>
+    </body>
+  </worldbody>
+</mujoco>
